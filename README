@@ -1,1 +1,27 @@
-# MCFM-8.2_EWSMEFT_ADDON
+---README_TOPEW_SMEFT--- by Martini, Schulze 2019
+
+   To install the external add-on for MCFM-8.3 
+   replace the following files by the ones provided 
+   and recompile:
+ 
+   MCFM-8.3/Bin/input.DAT
+   MCFM-8.3/src/Need/reader_input.f
+   MCFM-8.3/src/Need/writeinput.f
+   MCFM-8.3/src/TopEW/ggQQb_ew_oneloop.f
+   MCFM-8.3/src/TopEW/qqbQQb_ew_oneloop.f
+   MCFM-8.3/src/TopEW/qqb_QQb_g_ew.f
+   MCFM-8.3/src/TopEW/qqb_QQb_mix.f
+   MCFM-8.3/src/TopEW/qqb_QQb_mix_g.f
+ 
+ 
+   The file input.DAT has a new block:
+
+   [ttbar SMEFT, nproc=157]
+   +0d0               [voL2*Cpq3, real] <--- value for the Wilson coefficient Cpq3 times (v/Lambda)^2
+   +0d0               [voL2*Cpu, real]  <--- value for the Wilson coefficient Cpu times (v/Lambda)^2
+   +0d0               [factor*voL2]     <--- factor multiplying the (v/Lambda)^2 contribution
+   +0d0               [factor*voL4]     <--- factor multiplying the (v/Lambda)^4 contribution
+
+
+   For details and citation reference see arXiv:1911.11244
+
