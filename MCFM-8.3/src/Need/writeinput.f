@@ -51,8 +51,8 @@ c--- by the strings 'lstring' and 'rstring'
       include 'ewcorr.f'
       include 'mpicommon.f'
       
-      real(dp):: Cpq3i, Cpui, voL2i, voL4i
-      common /smeftcpl/ Cpq3i, Cpui, vol2i, vol4i  
+      real(dp):: Cpq3i, Cpui,ReCupi,ImCupi, voL2i, voL4i
+      common /smeftcpl/ Cpq3i,ReCupi,ImCupi, Cpui, vol2i, vol4i  
 c--- APPLgrid - flag using grid
 c      include 'ptilde.f'
 c      include 'APPLinclude.f'
@@ -469,6 +469,12 @@ c--- catch special scale choices for stop+b process
       endif
       if ((tag == 'Cpui') .or. (writeall)) then
       write(unitno,fmt=f99) Cpui,'(v/Lambda)^2*Cpu'
+      endif
+      if ((tag == 'ReCupi') .or. (writeall)) then
+      write(unitno,fmt=f99) ReCupi,'(v/Lambda)^2*Re[Cup]'
+      endif
+      if ((tag == 'ImCupi') .or. (writeall)) then
+      write(unitno,fmt=f99) ImCupi,'(v/Lambda)^2*Im[Cup]'
       endif
       if ((tag == 'vol2i') .or. (writeall)) then
       write(unitno,fmt=f99) vol2i,'factor*(v/Lambda)^2'

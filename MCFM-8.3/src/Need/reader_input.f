@@ -64,8 +64,8 @@
       include 'asymptotic.f'
       include 'specialcuts.f'
       
-      real(dp):: Cpq3i, Cpui, voL2i, voL4i
-      common /smeftcpl/ Cpq3i, Cpui, vol2i, vol4i  
+      real(dp):: Cpq3i, Cpui,ReCupi,ImCupi, voL2i, voL4i
+      common /smeftcpl/ Cpq3i, Cpui,ReCupi,ImCupi, vol2i, vol4i  
 c--- APPLgrid - flag using grid
 c      include 'ptilde.f'
 c      include 'APPLinclude.f'
@@ -592,6 +592,10 @@ c--- SMEFT couplings
       if (verbose) call writeinput(6,' * ',' ','Cpq3i')
       read(20,*) Cpui
       if (verbose) call writeinput(6,' * ',' ','Cpui')
+      read(20,*) ReCupi
+      if (verbose) call writeinput(6,' * ',' ','ReCupi')
+      read(20,*) ImCupi
+      if (verbose) call writeinput(6,' * ',' ','ImCupi')
       read(20,*) vol2i
       if (verbose) call writeinput(6,' * ',' ','vol2i')
       read(20,*) vol4i
