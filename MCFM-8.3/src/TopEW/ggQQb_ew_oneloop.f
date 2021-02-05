@@ -19,6 +19,7 @@ C --- by J. H. Kuehn, A. Scharf and P. Uwer
      .     Cpu, c(1:7)            
       common/em/aemmz
       real(dp)::trizx2,vrts3,vrts4,bx3,bx4,vrt3,vrt4,slf3,slf4,PreFac
+      real(dp)::kappa2, kappatilde2
 
       ep = 0
 c      musq = (2._dp*mt)**2
@@ -41,7 +42,7 @@ c      sw2 = 1._dp - mw**2/mz**2
       
 !-----BEGIN TILL (SMEFT couplings)
       
-      call smeft_coupl(gvt,gat,gw,gvt_smeft,gat_smeft,gvt_smeft2,gat_smeft2,gw_smeft2,voL2,voL4,Cpq3,Cpu,c)
+      call smeft_coupl(gvt,gat,gw,gvt_smeft,gat_smeft,gvt_smeft2,gat_smeft2,gw_smeft2,kappa2,kappatilde2,voL2,voL4,Cpq3,Cpu,c)
      
 !-----END TILL      
 
@@ -130,14 +131,11 @@ C --- In the ref. (II.18-22), and Appendix B (B.1-15).
 
 
 
-      vrts(5) = 
-     .     (4._dp*alpha*genfacs*gw**2*mt**2*sigma0*
-     .     (beta**2*s*(-mh**2 + (1._dp - beta**2)*s)*db0(mt**2
-     .     ,mt**2,mh**2) + 2._dp*(mh**2 + beta**2*s)*(xI2(mt**2,mt**2,
-     .     mh**2,musq,ep) - xI2(s,mt**2,mt**2,musq,ep)) + 
-     .     (-2._dp*mh**4 - 3._dp*beta**2*mh**2*s + beta**2*(1._dp 
-     .     - beta**2)*s**2)*xI3(s,mt**2,mt**2,mt**2,mt**2,mh**2
-     .     ,musq,ep)))/(mw**2*pi)
+      vrts(5)=-4._dp*alpha*genfacs*gw**2*mt**2*sigma0*(beta**2*s*((kappa2 + kappatilde2)*MH**2 + (-1 + beta**2)*kappa2*s)*DB0(MT**2,MT**2,MH**2) + 
+     -  ((-2*(-1 + 2*beta**2)*(kappa2 + kappatilde2)*MH**2)/(-1 + beta**2) - 2*beta**2*kappa2*s)*xI2(MT**2,MH**2,MT**2,musq,ep) + 
+     -  (2*beta**2*(kappa2 + kappatilde2)*MH**2*xI2(MT**2,MT**2,MH**2,musq,ep))/(-1 + beta**2) + 2*((kappa2 + kappatilde2)*MH**2 + beta**2*kappa2*s)*xI2(s,MT**2,MT**2,musq,ep) + 
+     -  (2*(kappa2 + kappatilde2)*MH**4 + beta**2*(3*kappa2 + kappatilde2)*MH**2*s + beta**2*(-1 + beta**2)*kappa2*s**2)*xI3(MT**2,MT**2,s,MT**2,MH**2,MT**2,musq,ep))/(mw**2*pi)
+       
 
 
 
@@ -311,36 +309,19 @@ C --- In the ref. (II.18-22), and Appendix B (B.1-15).
 
 
 
-      slf(5) = 
-     .     (alpha*genfacself*gw**2*sigma0*
-     .     ((-0.125_dp*(1._dp - beta**2)*s*(-mh**2 
-     .     + (1._dp - beta**2)*s)*(1._dp - beta**4*z**4 
-     .     + beta*(1._dp - beta**2)*(2._dp*beta - z 
-     .     - 3._dp*beta*z**2))*db0(mt**2,mt**2,mh**2))/(1._dp + beta*z) 
-     .     + (0.5_dp*(1._dp - beta**4*z**4 + beta**2*(1._dp 
-     .     - beta**2)*(1._dp - 3._dp*z**2))*(xI1(mh**2,musq,ep) 
-     .     - xI1(mt**2,musq,ep)))/(1._dp + beta**2 + 2._dp*beta*z) 
-     .     + (0.25_dp*((1._dp - beta**2)**2*s*(1._dp + beta**2 
-     .     - 2._dp*beta**4 - beta**2*(2._dp - 3._dp*beta**2)*z**2 
-     .     - beta**4*z**4) + mh**2*(-2._dp - 2._dp*beta**2 
-     .     + 5._dp*beta**4 - 2._dp*beta**6 - beta**3*(3._dp 
-     .     - 2._dp*beta**2)*z + 3._dp*beta**2*(2._dp - 3._dp*beta**2 
-     .     + beta**4)*z**2 + 3._dp*beta**3*(1._dp - beta**2)*z**3 
-     .     + beta**4*(2._dp - beta**2)*z**4 + beta**5*z**5))*
-     .     xI2(mt**2,mt**2,mh**2,musq,ep))/(1._dp + beta*z)**2 - 
-     .     (0.125_dp*(1._dp - beta**2)*(s*(1._dp + beta**2 
-     .     - 5._dp*beta**4 - 2._dp*beta**6 + 4._dp*beta**8 
-     .     + 2._dp*beta*(1._dp - beta**2 - 5._dp*beta**4 
-     .     + 4._dp*beta**6)*z - beta**2*(2._dp - 2._dp*beta**2 
-     .     - 5._dp*beta**4 + 6._dp*beta**6)*z**2 - 2._dp*beta**3*(1._dp 
-     .     - 7._dp*beta**2 + 6._dp*beta**4)*z**3 + beta**4*(2._dp 
-     .     - 3._dp*beta**2 + 2._dp*beta**4)*z**4 - 2._dp*beta**5*(1._dp 
-     .     - 2._dp*beta**2)*z**5 + beta**6*z**6) - 2._dp*beta**2*mh**2*
-     .     (1._dp - z**2)*(2._dp + beta**2 - 2._dp*beta**4 + 
-     .     beta*(3._dp - 2._dp*beta**2)*z + beta**3*z**2*(beta + z)))*
-     .     xI2(t,mt**2,mh**2,musq,ep))/((1._dp + beta*z)**2*
-     .     (1._dp + beta**2 + 2._dp*beta*z))))/(mw**2*pi)
-
+      slf(5)=alpha*genfacself*gw**2*sigma0*(((-1 + beta**2)*s*(kappatilde2*MH**2 + kappa2*(MH**2 + (-1 + beta**2)*s))*(-1 + beta*z - beta**3*z + beta**2*(-2 + 3*z**2) + beta**4*(2 - 3*z**2 + z**4))*DB0(MT**2,MT**2,MH**2))/(8 + 8*beta*z) - 
+     -  ((kappa2 + kappatilde2)*(-1 + beta**2*(-1 + 3*z**2) + beta**4*(1 - 3*z**2 + z**4))*xI1(MH**2,musq,ep))/(2._dp*(1 + beta**2 + 2*beta*z)) + 
+     -  ((kappa2 + kappatilde2)*(-1 + beta**2*(-1 + 3*z**2) + beta**4*(1 - 3*z**2 + z**4))*xI1(MT**2,musq,ep))/(2._dp*(1 + beta**2 + 2*beta*z)) + 
+     -  ((kappatilde2*MH**2*(-2 + 3*beta**3*z*(-1 + z**2) + beta**2*(-2 + 6*z**2) - beta**6*(2 - 3*z**2 + z**4) + beta**5*z*(2 - 3*z**2 + z**4) + beta**4*(5 - 9*z**2 + 2*z**4)) - 
+     -       kappa2*((-1 + beta**2)**2*s*(-1 + beta**2*(-1 + 2*z**2) + beta**4*(2 - 3*z**2 + z**4)) + 
+     -          MH**2*(2 + beta**2*(2 - 6*z**2) - 3*beta**3*z*(-1 + z**2) + beta**4*(-5 + 9*z**2 - 2*z**4) + beta**6*(2 - 3*z**2 + z**4) - beta**5*z*(2 - 3*z**2 + z**4))))*xI2(MT**2,MT**2,MH**2,musq,ep))/
+     -   (4._dp*(1 + beta*z)**2) + ((-1 + beta**2)*((kappa2 - kappatilde2)*s + 2*beta*(kappa2 - kappatilde2)*s*z + 2*beta**8*kappa2*s*(2 - 3*z**2 + z**4) + 
+     -       4*beta**7*kappa2*s*z*(2 - 3*z**2 + z**4) + beta**2*(kappa2*(s - 2*s*z**2 + 4*MH**2*(-1 + z**2)) + kappatilde2*(4*MH**2*(-1 + z**2) + s*(-1 + 2*z**2))) + 
+     -       2*beta**3*z*(kappa2*(3*MH**2*(-1 + z**2) - s*(1 + z**2)) + kappatilde2*(3*MH**2*(-1 + z**2) + s*(-1 + 3*z**2))) + 
+     -       2*beta**5*z*(kappa2*(-(s*(5 - 7*z**2 + z**4)) + MH**2*(2 - 3*z**2 + z**4)) + kappatilde2*(s*(1 - 3*z**2 + z**4) + MH**2*(2 - 3*z**2 + z**4))) + 
+     -       beta**4*(kappatilde2*(s*(1 - 2*z**2)**2 + 2*MH**2*(-1 + z**2)) + kappa2*(2*MH**2*(-1 + z**2) + s*(-5 + 2*z**2 + 2*z**4))) + 
+     -       beta**6*(kappatilde2*(s*z**2*(1 - 3*z**2 + z**4) + 2*MH**2*(2 - 3*z**2 + z**4)) + kappa2*(2*MH**2*(2 - 3*z**2 + z**4) + s*(-2 + 5*z**2 - 3*z**4 + z**6))))*
+     -     xI2(MT**2 - (s*(1 + beta*z))/2._dp,MH**2,MT**2,musq,ep))/(8._dp*(1 + beta*z)**2*(1 + beta**2 + 2*beta*z)))/(mw**2*pi)
 
 
       vrt(1) = 
@@ -592,46 +573,24 @@ C --- In the ref. (II.18-22), and Appendix B (B.1-15).
      -   (16._dp*(-1 + beta*z)*(1 + beta*z)*(1 + beta**2 + 2*beta*z))))/(mw**2*pi)
 
 
-      vrt(5) = 
-     .     (alpha*genfacvert*gw**2*sigma0*
-     .     (0.125_dp*(1._dp - beta**2)**2*s + (0.25_dp*(1._dp 
-     .     - beta**2)*s*(-mh**2 + (1._dp - beta**2)*s)*
-     .     (1._dp - beta**4*z**4 + beta*(1._dp - beta**2)*
-     .     (2._dp*beta - z - 3._dp*beta*z**2))*
-     .     db0(mt**2,mt**2,mh**2))/(1._dp - beta*z) 
-     .     + (0.5_dp*(1._dp + 2._dp*beta**2 - beta**4 
-     .     + beta*(1._dp + 4._dp*beta**2 - 3._dp*beta**4)*z 
-     .     - 2._dp*beta**4*z**4*(1._dp + beta*z) 
-     .     - 2._dp*(1._dp - beta**2)*(2._dp*beta**2*z**2 
-     .     + 3._dp*beta**3*z**3))*(-xI1(mh**2,musq,ep) 
-     .     + xI1(mt**2,musq,ep)))/((1._dp - beta*z)*
-     .     (1._dp + beta**2 + 2._dp*beta*z)) + (0.125_dp*(-(1._dp 
-     .     - beta**2)**2*s*(1._dp + 5._dp*beta**2 - 8._dp*beta**4 
-     .     + beta*(1._dp - beta**2)*z - 6._dp*beta**2*(1._dp 
-     .     - 2._dp*beta**2)*z**2 - 4._dp*beta**4*z**4) 
-     .     + 2._dp*mh**2*(1._dp + 8._dp*beta**2 - 11._dp*beta**4 
-     .     + 4._dp*beta**6 + beta*(1._dp + 4._dp*beta**2 - 3._dp*beta**4)*z 
-     .     - 2._dp*beta**2*(5._dp - 8._dp*beta**2 + 3._dp*beta**4)*z**2 
-     .     - 6._dp*beta**3*(1._dp - beta**2)*z**3 - 2._dp*beta**4*
-     .     (2._dp - beta**2)*z**4 - 2._dp*beta**5*z**5))*
-     .     xI2(mt**2,mt**2,mh**2,musq,ep))/(1._dp - beta**2*z**2) 
-     .     + (0.125_dp*(1._dp - beta**2)*(2._dp*mh**2*(1._dp 
-     .     - 4._dp*beta**2 - 3._dp*beta**4 + 4._dp*beta**6 + beta*(1._dp 
-     .     - 8._dp*beta**2 + 5._dp*beta**4)*z + 2._dp*beta**2*(1._dp 
-     .     + 2._dp*beta**2 - 3._dp*beta**4)*z**2 + 6._dp*beta**3*(1._dp 
-     .     - beta**2)*z**3 + 2._dp*beta**6*z**4 + 2._dp*beta**5*z**5) 
-     .     + beta*s*(beta*(3._dp - 8._dp*beta**2 - 5._dp*beta**4 
-     .     + 8._dp*beta**6) + (1._dp + beta**2 - 23._dp*beta**4 
-     .     + 17._dp*beta**6)*z - beta*(1._dp - 11._dp*beta**4 
-     .     + 12._dp*beta**6)*z**2 - 2._dp*beta**2*(1._dp - 13._dp*beta**2 
-     .     + 12._dp*beta**4)*z**3 + 2._dp*beta**3*(2._dp - 3._dp*beta**2 
-     .     + 2._dp*beta**4)*z**4 - 4._dp*beta**4*(1._dp 
-     .     - 2._dp*beta**2)*z**5 + 2._dp*beta**5*z**6))*
-     .     xI2(t,mt**2,mh**2,musq,ep))/((1._dp + beta**2 + 2._dp*beta*z)*
-     .     (1._dp - beta**2*z**2)) 
-     .     + 0.0625_dp*(1._dp - beta**2)**2*s**2*(3._dp 
-     .     - beta**2 + 2._dp*beta*z)*
-     .     xI3(0._dp,mt**2,t,mt**2,mt**2,mh**2,musq,ep)))/(mw**2*pi)
+      vrt(5)=alpha*genfacvert*gw**2*sigma0*(((-1 + beta**2)**2*(kappa2 + kappatilde2)*s)/8._dp + ((-1 + beta**2)*s*((kappa2 + kappatilde2)*MH**2 + (-1 + beta**2)*kappa2*s)*
+     -     (-1 + beta*(z + beta*(-2 - beta*z + 3*z**2 + beta**2*(2 - 3*z**2 + z**4))))*DB0(MT**2,MT**2,MH**2))/(-4 + 4*beta*z) - 
+     -  ((kappa2 + kappatilde2)*(-1 + beta*(-z + beta*(-2 + 4*z**2 + beta*(-4*z + 6*z**3) + beta**3*z*(3 - 6*z**2 + 2*z**4) + beta**2*(1 - 4*z**2 + 2*z**4))))*xI1(MH**2,musq,ep))/
+     -   (2._dp*(-1 + beta*z)*(1 + beta**2 + 2*beta*z)) + ((kappa2 + kappatilde2)*
+     -     (-1 + beta*(-z + beta*(-2 + 4*z**2 + beta*(-4*z + 6*z**3) + beta**3*z*(3 - 6*z**2 + 2*z**4) + beta**2*(1 - 4*z**2 + 2*z**4))))*xI1(MT**2,musq,ep))/(2._dp*(-1 + beta*z)*(1 + beta**2 + 2*beta*z)) + 
+     -  ((1 - beta**2)*(kappatilde2*((-1 + beta**2)*s*(-1 + beta*z)*(1 + beta**2 + 2*beta*z) + 2*MH**2*(1 + beta*(-z + beta*(-3 + beta*z + 2*z**2 + 2*beta**2*(2 - 3*z**2 + z**4))))) + 
+     -       kappa2*(2*MH**2*(1 + beta*(-z + beta*(-3 + beta*z + 2*z**2 + 2*beta**2*(2 - 3*z**2 + z**4)))) + (-1 + beta**2)*s*(-1 + beta*(-z + beta*(-5 + beta*z + 6*z**2 + 4*beta**2*(2 - 3*z**2 + z**4)))))
+     -       )*xI2(MT**2,MH**2,MT**2,musq,ep))/(8._dp*(-1 + beta**2*z**2)) + ((kappa2 + kappatilde2)*MH**2*(-1 + beta*(z + beta*(-2 - beta*z + 3*z**2 + beta**2*(2 - 3*z**2 + z**4))))*
+     -     xI2(MT**2,MT**2,MH**2,musq,ep))/(-2 + 2*beta*z) + ((-1 + beta**2)*(kappatilde2*
+     -        (beta*s*(z + beta*(-1 + beta**5*z + 3*z**2 + 4*beta**2*z**2*(-3 + 2*z**2) + beta*z*(-7 + 6*z**2) + beta**3*(z - 6*z**3 + 4*z**5) + beta**4*(-1 + 7*z**2 - 6*z**4 + 2*z**6))) + 
+     -          2*MH**2*(1 + beta*(z + beta*(-4 + 2*z**2 + beta**2*(-3 + 4*z**2) + beta*(-8*z + 6*z**3) + 2*beta**4*(2 - 3*z**2 + z**4) + beta**3*z*(5 - 6*z**2 + 2*z**4))))) + 
+     -       kappa2*(beta*s*(z + beta*(3 - z**2 + beta*(z - 2*z**3) + beta**3*z*(-23 + 26*z**2 - 4*z**4) + 4*beta**2*(-2 + z**4) + 4*beta**6*(2 - 3*z**2 + z**4) + 
+     -                beta**4*(-5 + 11*z**2 - 6*z**4 + 2*z**6) + beta**5*z*(17 + 8*z**2*(-3 + z**2)))) + 
+     -          2*MH**2*(1 + beta*(z + beta*(-4 + 2*z**2 + beta**2*(-3 + 4*z**2) + beta*(-8*z + 6*z**3) + 2*beta**4*(2 - 3*z**2 + z**4) + beta**3*z*(5 - 6*z**2 + 2*z**4))))))*
+     -     xI2(MT**2 - (s*(1 + beta*z))/2._dp,MH**2,MT**2,musq,ep))/(8._dp*(-1 + beta*z)*(1 + beta*z)*(1 + beta**2 + 2*beta*z)) - 
+     -  ((-1 + beta**2)**2*s**2*(kappa2*(-3 + beta**2 - 2*beta*z) + kappatilde2*(1 + beta**2 + 2*beta*z))*xI3(0._dp,MT**2,MT**2 - (s*(1 + beta*z))/2._dp,MT**2,MT**2,MH**2,musq,ep))/16._dp)/(mw**2*pi)
+     
+
 
       bx(1) = 
      .     (0.125_dp*alpha*genfacbox*sigma0*
@@ -1042,55 +1001,32 @@ C --- In the ref. (II.18-22), and Appendix B (B.1-15).
 
 
 
-      bx(5) = 
-     .     (-0.25_dp*alpha*genfacbox*gw**2*mt**2*sigma0*
-     .     (beta*z*(1._dp - z**2) - (4._dp*beta*(1._dp - z**2)*
-     .     (4._dp*beta - z - 2._dp*beta*z**2)*(-xI1(mh**2,musq,
-     .     ep) + xI1(mt**2,musq,ep)))/(s*(1._dp + beta**2 + 2._dp*beta*z)) 
-     .     + ((2._dp*beta*(1._dp - beta**2)*s*(2._dp + 3._dp*beta**2 
-     .     - beta*(3._dp - 4._dp*beta**2)*z - (1._dp 
-     .     + 6._dp*beta**2)*z**2 + beta*(1._dp - 2._dp*beta**2)*z**3 
-     .     + 2._dp*beta**2*z**4) + 2._dp*mh**2*(-6._dp*beta**3 - (5._dp 
-     .     - 8._dp*beta**2 + 4._dp*beta**4)*z - beta*(5._dp 
-     .     - 12._dp*beta**2)*z**2 + (3._dp - 4._dp*beta**2 + 2._dp*beta**4
-     .     )*z**3 + beta*(3._dp - 4._dp*beta**2)*z**4))*xI2(mt**2,mt**2,
-     .     mh**2,musq,ep))/(beta*s*(1._dp + beta*z)) + ((2._dp*mh**2*z*
-     .     (5._dp - 4._dp*beta**2 - (3._dp - 2._dp*beta**2)*z**2) 
-     .     - beta*s*(2._dp - beta*(7._dp - 8._dp*beta**2)*z 
-     .     - 2._dp*z**2 + beta*(3._dp - 4._dp*beta**2)*z**3))*
-     .     xI2(s,mt**2,mt**2,musq,ep))/(beta*s) + ((-4._dp*beta*mh**2*
-     .     (beta + z)*(1._dp - 3._dp*beta**2 + beta*(1._dp - 2._dp*beta**2
-     .     )*z + 2._dp*beta**2*z**2 + beta**3*z**3) - 2._dp*s*(1._dp 
-     .     - 3._dp*beta**6 + beta*(2._dp + 2._dp*beta**2 - 5._dp*beta**4 
-     .     - 4._dp*beta**6)*z + beta**2*(1._dp + 3._dp*beta**2 
-     .     - 6._dp*beta**4)*z**2 + 2._dp*beta**5*(1._dp + beta**2)*z**3 
-     .     + 4._dp*beta**6*z**4 + beta**5*z**5))*xI2(t,mt**2,mh**2,musq,
-     .     ep))/(s*(1._dp + beta*z)*(1._dp + beta**2 + 2._dp*beta*z)) - 
-     .     (1._dp*(8._dp*mh**4 - 4._dp*mh**2*s*(2._dp - 3._dp*beta**2 
-     .     - beta*z) + s**2*(6._dp - 10._dp*beta**2 + 5._dp*beta**4 
-     .     - 2._dp*beta*(1._dp - 2._dp*beta**2)*z + beta**2*z**2))*
-     .     xI3(0._dp,0._dp,s,mt**2,mt**2,mt**2,musq,ep))/s + ((s**2*(6._dp 
-     .     - 10._dp*beta**2 + 5._dp*beta**4 + beta*(3._dp - 4._dp*beta**2 
-     .     + 4._dp*beta**4)*z - beta**2*(1._dp - 4._dp*beta**2)*z**2 
-     .     + beta**3*z**3) + (1._dp + beta*z)*(8._dp*mh**4 - 4._dp*mh**2*s*
-     .     (2._dp - 3._dp*beta**2 - beta*z)))*xI3(0._dp,mt**2,t,mt**2
-     .     ,mt**2,mh**2,musq,ep))/s + ((2._dp*mh**4*z*(5._dp 
-     .     - 8._dp*beta**2 - (3._dp - 2._dp*beta**2)*z**2) 
-     .     - 2._dp*beta*mh**2*s*(1._dp + beta**2 - 2._dp*beta*(5._dp 
-     .     - 6._dp*beta**2)*z - (1._dp - beta**2)*z**2 
-     .     + 3._dp*beta*(1._dp - beta**2)*z**3) + beta**2*s**2*
-     .     (beta - 2._dp*beta**3 - (7._dp - 13._dp*beta**2 
-     .     + 8._dp*beta**4)*z + beta*(1._dp - 2._dp*beta**2)*z**2 
-     .     - 2._dp*beta**2*(1._dp - beta**2)*z**3))*
-     .     xI3(s,mt**2,mt**2,mt**2,mt**2,mh**2,musq,ep))/(beta*s) 
-     .     + (0.5_dp*(-16._dp*mh**6 + 16._dp*mh**4*s*(1._dp - 2._dp*beta**2 
-     .     - beta*z) - 2._dp*mh**2*s**2*(6._dp - 13._dp*beta**2 
-     .     + 10._dp*beta**4 - 6._dp*beta*(1._dp - 2._dp*beta**2)*z 
-     .     + beta**2*(2._dp + beta**2)*z**2) - s**3*(2._dp + beta**2 
-     .     - 6._dp*beta**4 + 4._dp*beta**6 + beta*(5._dp - 10._dp*beta**2 
-     .     + 8._dp*beta**4)*z + beta**4*(1._dp + 2._dp*beta**2)*z**2 
-     .     + beta**3*z**3))*xI4(0._dp,0._dp,mt**2,mt**2,s,t,mt**2,mt**2,
-     .     mt**2,mh**2,musq,ep))/s))/(mw**2*pi)
+      bx(5)=(0.25_dp*alpha*genfacbox*gw**2*mt**2*sigma0*(beta*(kappa2 + kappatilde2)*z*(-1 + z**2) - (4*beta*(kappa2 + kappatilde2)*(-1 + z**2)*(z + 2*beta*(-2 + z**2))*xI1(MH**2,musq,ep))/(s*(1 + beta**2 + 2*beta*z)) + 
+     -  (4*beta*(kappa2 + kappatilde2)*(-1 + z**2)*(z + 2*beta*(-2 + z**2))*xI1(MT**2,musq,ep))/(s*(1 + beta**2 + 2*beta*z)) + 
+     -  (2*(6*beta**3*(kappa2 + kappatilde2)*MH**2 + beta*(-1 + beta**2)*((2 + 3*beta**2)*kappa2 - (-2 + beta**2)*kappatilde2)*s + 
+     -       ((5 - 8*beta**2 + 4*beta**4)*(kappa2 + kappatilde2)*MH**2 + beta**2*(-1 + beta**2)*((-3 + 4*beta**2)*kappa2 + kappatilde2)*s)*z + 
+     -       beta*(-((-5 + 12*beta**2)*(kappa2 + kappatilde2)*MH**2) - (-1 + beta**2)*((1 + 6*beta**2)*kappa2 + kappatilde2)*s)*z**2 - 
+     -       ((3 - 4*beta**2 + 2*beta**4)*(kappa2 + kappatilde2)*MH**2 + beta**2*(-1 + beta**2)*((-1 + 2*beta**2)*kappa2 + kappatilde2)*s)*z**3 + 
+     -       beta*((-3 + 4*beta**2)*(kappa2 + kappatilde2)*MH**2 + 2*beta**2*(-1 + beta**2)*kappa2*s)*z**4)*xI2(MT**2,MH**2,MT**2,musq,ep))/(beta*s*(1 + beta*z)) + 
+     -  (-4*beta**3*kappa2*z*(-2 + z**2) - 2*(kappa2 + kappatilde2)*(-1 + z**2) + (2*(kappa2 + kappatilde2)*MH**2*z*(-5 + 3*z**2))/(beta*s) + 
+     -     (beta*z*(kappatilde2*(8*MH**2 + s - (4*MH**2 + s)*z**2) + kappa2*(-4*MH**2*(-2 + z**2) + s*(-7 + 3*z**2))))/s)*xI2(s,MT**2,MT**2,musq,ep) + 
+     -  (2*((kappa2 + kappatilde2)*s + 2*beta*(kappa2 + kappatilde2)*(MH**2 + s)*z + 2*beta**7*kappa2*s*z*(-2 + z**2) + beta**6*s*(kappatilde2 + kappa2*(-3 - 6*z**2 + 4*z**4)) + 
+     -       2*beta**3*z*(kappa2*(s + 2*MH**2*(-1 + z**2)) + kappatilde2*(2*MH**2*(-1 + z**2) + s*(-5 + 3*z**2))) + 
+     -       beta**2*(kappa2*(s*z**2 + 2*MH**2*(1 + z**2)) + kappatilde2*(2*MH**2*(1 + z**2) + s*(-4 + 3*z**2))) + 
+     -       beta**4*(kappa2*(3*s*z**2 + 2*MH**2*(-3 + z**4)) + kappatilde2*(s*z**2*(-5 + 4*z**2) + 2*MH**2*(-3 + z**4))) + 
+     -       beta**5*z*(kappatilde2*(3*s + (-2 + z**2)*(2*MH**2 + s*z**2)) + kappa2*(2*MH**2*(-2 + z**2) + s*(-5 + 2*z**2 + z**4))))*xI2(MT**2 - (s*(1 + beta*z))/2._dp,MH**2,MT**2,musq,ep))/
+     -   (s*(1 + beta*z)*(1 + beta**2 + 2*beta*z)) + ((kappatilde2*(8*MH**4 + 4*beta*MH**2*s*(beta + z) + s**2*(2 + beta*(2*z + beta*(-2 + beta**2 + z**2)))) + 
+     -       kappa2*(8*MH**4 + 4*MH**2*s*(-2 + beta*(3*beta + z)) + s**2*(6 + beta*(-2*z + beta*(-10 + 5*beta**2 + 4*beta*z + z**2)))))*xI3(0._dp,0._dp,s,MT**2,MT**2,MT**2,musq,ep))/s - 
+     -  ((kappa2*(8*MH**4*(1 + beta*z) + 4*MH**2*s*(1 + beta*z)*(-2 + beta*(3*beta + z)) + s**2*(6 + beta*(3*z + beta*(5*(-2 + beta**2) + 4*beta*(-1 + beta**2)*z + (-1 + 4*beta**2)*z**2 + beta*z**3)))) + 
+     -       kappatilde2*(8*MH**4*(1 + beta*z) + 4*beta*MH**2*s*(beta + z)*(1 + beta*z) + s**2*(2 + beta*(3*z + beta*(-2 + 3*z**2 + beta*(beta + z**3))))))*
+     -     xI3(0._dp,MT**2,MT**2 - (s*(1 + beta*z))/2.,MT**2,MT**2,MH**2,musq,ep))/s + 
+     -  (-2*beta**5*kappa2*s*z*(-4 + z**2) - 2*(kappa2 + kappatilde2)*MH**2*(-1 + z**2) + 2*beta**4*kappa2*s*(1 + z**2) + beta**2*(kappa2*(2*MH**2 - s) + kappatilde2*(2*MH**2 + s))*(1 + z**2) + 
+     -     (2*(kappa2 + kappatilde2)*MH**4*z*(-5 + 3*z**2))/(beta*s) + beta**3*z*(kappatilde2*(s - 2*MH**2*(-4 + z**2)) + kappa2*(-6*MH**2*(-4 + z**2) + s*(-13 + 2*z**2))) + 
+     -     (beta*z*(kappatilde2*(s**2 - 4*MH**4*(-4 + z**2) + 2*MH**2*s*(-2 + z**2)) + kappa2*(7*s**2 - 4*MH**4*(-4 + z**2) + 2*MH**2*s*(-10 + 3*z**2))))/s)*xI3(MT**2,MT**2,s,MT**2,MH**2,MT**2,musq,ep)
+     -   + ((kappatilde2*(16*MH**6 + 16*beta*MH**4*s*(beta + z) + beta*s**3*(beta + z)*(1 + beta*z)**2 + 2*MH**2*s**2*(2 + beta*(2*z + beta*(-1 + 2*beta**2 + 4*beta*z + (2 + beta**2)*z**2)))) + 
+     -       kappa2*(16*MH**6 + 16*MH**4*s*(-1 + beta*(2*beta + z)) + s**3*(2 + beta*(beta + 5*z + beta**2*(-10*z + 8*beta**2*z + z**3 + beta*(-6 + z**2) + 2*beta**3*(2 + z**2)))) + 
+     -          2*MH**2*s**2*(6 + beta*(-6*z + beta*(-13 + 12*beta*z + 2*z**2 + beta**2*(10 + z**2))))))*xI4(0._dp,0._dp,MT**2,MT**2,s,MT**2 - (s*(1 + beta*z))/2._dp,MT**2,MT**2,MT**2,MH**2,musq,ep))/(2._dp*s)))/(mw**2*pi)
+
 
 c--- use the value of "tevscale" (passed via anomcoup.f)
 c--- as an anomalous top Yukawa coupling:
