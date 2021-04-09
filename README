@@ -1,4 +1,5 @@
 ---README_TOPEW_SMEFT--- by Martini, Schulze 2019
+---anomalous top-Higgs coupling (complex Cup) added 2021 
 
    To install the external add-on for MCFM-8.3 
    replace the following files by the ones provided 
@@ -19,8 +20,10 @@
    [ttbar SMEFT, nproc=157]
    +0d0               [voL2*Cpq3, real] <--- value for the Wilson coefficient Cpq3 times (v/Lambda)^2
    +0d0               [voL2*Cpu, real]  <--- value for the Wilson coefficient Cpu times (v/Lambda)^2
-   +0d0               [factor*voL2]     <--- factor multiplying the (v/Lambda)^2 contribution
-   +0d0               [factor*voL4]     <--- factor multiplying the (v/Lambda)^4 contribution
+   +0d0               [voL2*Re[Cup], real] <--- value for the real part of the Wilson coefficient Cup times (v/Lambda)^2
+   +0d0               [voL2*Im[Cup], real] <--- value for the imaginary part of the Wilson coefficient Cup times (v/Lambda)^2
+   +1d0               [factor*voL2]     <--- factor multiplying the (v/Lambda)^2 contribution
+   +1d0               [factor*voL4]     <--- factor multiplying the (v/Lambda)^4 contribution
 
 
    For details and citation reference see arXiv:1911.11244

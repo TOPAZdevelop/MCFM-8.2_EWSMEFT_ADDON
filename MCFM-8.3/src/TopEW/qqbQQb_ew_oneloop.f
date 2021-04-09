@@ -18,6 +18,7 @@
       integer ep,i,fl
       real(dp):: vev, Lambdainv, gvt_smeft, gat_smeft, gw_smeft, gvt_smeft2, gat_smeft2, gw_smeft2, Cpq3, Cpu, voL2, voL4, c(1:7),gw2gvt,gw2gat,gatgvt,gw4      
       real(dp)::qa4,qa3,PreFac
+      real(dp)::kappa2, kappatilde2      
       
 
       
@@ -48,7 +49,7 @@ c      alpha = 1._dp/126.3_dp
       
 
       
-      call smeft_coupl(gvt,gat,gw,gvt_smeft,gat_smeft,gvt_smeft2,gat_smeft2,gw_smeft2,voL2,voL4,Cpq3,Cpu,c)
+      call smeft_coupl(gvt,gat,gw,gvt_smeft,gat_smeft,gvt_smeft2,gat_smeft2,gw_smeft2,kappa2,kappatilde2,voL2,voL4,Cpq3,Cpu,c)
       
 
       gw2gvt=(gw**2*((2*Cpq3 - Cpu)*Sqrt(cw2*sw2)*(voL2 + 2*Cpq3*voL4) + 4*cw2*gvt*sw2*(1 + 2*Cpq3*voL2 + Cpq3**2*voL4)))/(4._dp*cw2*sw2)
@@ -208,20 +209,15 @@ C      BB = 0._dp
      .     + 16._dp*(-8._dp*rb**2 + 4._dp*rb**2*yphi + rw*ys)*f2(z,beta))*
      .     xI3(mt**2,mt**2,s,mb**2,mw**2,mb**2,musq,ep))/beta**2))/pi
      
-      qa(5) = 
-     .     (0.5_dp*alpha*gw**2*mt**2*sigma0*(-1._dp - z**2 + 2._dp*(-1._dp 
-     .     + beta**2 + rh)*s*(2._dp - beta**2*(1._dp - z**2))*db0(mt**2,
-     .     mt**2,mh**2) + (4._dp*(1._dp + z**2)*
-     .     (xI1(mh**2,musq,ep) - xI1(mt**2,musq,ep)))/((1._dp - beta**2)*
-     .     s) - 2._dp*(2._dp*(1._dp - beta**2)*(1._dp - z**2) + (rh*(1._dp 
-     .     - beta**2 - 3._dp*z**2 + 7._dp*beta**2*z**2 + 2._dp*beta**4*
-     .     (1._dp - z**2)))/(beta**2*(1._dp - beta**2)))*xI2(mt**2,mt**2,
-     .     mh**2,musq,ep) + ((beta**2*(5._dp - 3._dp*z**2 - 4._dp*beta**2*
-     .     (1._dp - z**2)) + 2._dp*rh*f2(z,beta))*xI2(s,mt**2,mt**2,musq,
-     .     ep))/beta**2 + (2._dp*s*(3._dp*beta**2*(1._dp - beta**2)*rh*
-     .     (1._dp - z**2) - beta**2*(1._dp - beta**2)*(2._dp - beta**2*
-     .     (1._dp - z**2)) + rh**2*f2(z,beta))*xI3(mt**2,mt**2,s,mt**2,
-     .     mh**2,mt**2,musq,ep))/beta**2))/(mw**2*pi)
+      qa(5)=(0.5_dp*alpha*gw**2*mt**2*sigma0/((1 - beta**2)*s)*((1 - beta**2)*s*(-((kappa2 + kappatilde2)*(1 + z**2)) + 2*(kappatilde2*rh + kappa2*(-1 + beta**2 + rh))*s*(2 + beta**2*(-1 + z**2))*DB0(MT**2,MT**2,rh*s)) - 
+     -      4*(kappa2 + kappatilde2)*(1 + z**2)*xI1(MT**2,musq,ep) + 4*(kappa2 + kappatilde2)*(1 + z**2)*xI1(rh*s,musq,ep) - 
+     -      4*(kappa2 + kappatilde2)*rh*s*(2 + beta**2*(-1 + z**2))*xI2(MT**2,MT**2,rh*s,musq,ep) + 
+     -      (2*(-1 + beta**2)*s*((kappa2 + kappatilde2)*rh*(1 - 3*z**2) + 2*beta**4*kappa2*(-1 + z**2) + 2*beta**2*(2*kappatilde2*rh + kappa2*(-1 + 2*rh))*(-1 + z**2))*
+     -         xI2(MT**2,rh*s,MT**2,musq,ep))/beta**2 - ((-1 + beta**2)*s*(2*(kappa2 + kappatilde2)*rh*(1 - 3*z**2) + 4*beta**4*kappa2*(-1 + z**2) + 
+     -           beta**2*(kappa2*(5 - 4*rh + (-3 + 4*rh)*z**2) + kappatilde2*(1 + z**2 + 4*rh*(-1 + z**2))))*xI2(s,MT**2,MT**2,musq,ep))/beta**2 - 
+     -      (2*(-1 + beta**2)*s**2*(kappatilde2*rh*(rh - 3*rh*z**2 + beta**4*(-1 + z**2) + beta**2*(-1 + 2*rh)*(-1 + z**2)) + 
+     -           kappa2*(3*beta**2*(-1 + beta**2)*rh*(-1 + z**2) + beta**2*(-1 + beta**2)*(2 + beta**2*(-1 + z**2)) + rh**2*(1 - 3*z**2 + 2*beta**2*(-1 + z**2))))*
+     -         xI3(MT**2,MT**2,s,MT**2,rh*s,MT**2,musq,ep))/beta**2))/(mw**2*pi)
        
 
 !-----BEGIN TILL (gvt->gvt_smeft, gat->gat_smeft)
@@ -453,22 +449,24 @@ c      corr = BQCDEW(:)
 
       end function D6
 
-      subroutine smeft_coupl(gvt_sm,gat_sm,gw_sm,gvt_smeft,gat_smeft,gvt_smeft2,gat_smeft2,gw_smeft2,voL2,voL4,Cpq3,Cpu,c)
+      subroutine smeft_coupl(gvt_sm,gat_sm,gw_sm,gvt_smeft,gat_smeft,gvt_smeft2,gat_smeft2,gw_smeft2,kappa2,kappatilde2,voL2,voL4,Cpq3,Cpu,c)
       implicit none
       include 'types.f'
       include 'constants.f'
       include 'ewcouple.f'
       include 'masses.f'
-      real(dp):: Cpq3i, Cpui, voL2i, voL4i
-      common /smeftcpl/ Cpq3i, Cpui, vol2i, vol4i  
+      real(dp):: Cpq3i, Cpui,ReCupi,ImCupi, voL2i, voL4i
+      common /smeftcpl/ Cpq3i, Cpui,ReCupi,ImCupi, vol2i, vol4i  
       real(dp):: mw,mz,gvt_sm,gat_sm,gw_sm,sw2,cw2
       integer i
       real(dp):: vev, Lambdainv, gvt_smeft, gat_smeft, gw_smeft, gvt_smeft2, gat_smeft2, gw_smeft2,voL2,voL4,Cpq3,Cpq1,Cpu,c(1:7)
+      real(dp)::ImCup,ReCup,kappa2,kappatilde2
 
       sw2 = xw
       cw2 = 1._dp-sw2      
       mw = wmass
       mz = zmass
+
             
       do i=1,7
        c(i)=1._dp
@@ -484,10 +482,14 @@ c      corr = BQCDEW(:)
        Cpq3=Cpq3i/vol2
        Cpq1=-Cpq3
        Cpu=Cpui/vol2
+       ImCup=ImCupi/vol2
+       ReCup=ReCupi/vol2
       else
        Cpq3=0._dp
        Cpq1=0._dp
        Cpu=0._dp
+       ImCup=0._dp
+       ReCup=0._dp
       end if
 
       gvt_smeft=gvt_sm-voL2*0.5_dp*(Cpq1-Cpq3+Cpu)*0.5_dp/sqrt(sw2*cw2)
@@ -503,6 +505,9 @@ c      corr = BQCDEW(:)
      -       2._dp*cw2*sw2*gat_sm))/(16._dp*cw2*sw2)
 
       gw_smeft2=(1._dp + 2._dp*Cpq3*voL2 + Cpq3**2*voL4)*gw_sm**2
+      
+      kappa2=1._dp-2._dp*voL2*vev/Sqrt(2._dp)/mt*ReCup+voL4*vev**2/2._dp/mt/mt*ReCup**2
+      kappatilde2=voL4*vev**2/2._dp/mt/mt*ImCup**2
       
       
       end subroutine smeft_coupl

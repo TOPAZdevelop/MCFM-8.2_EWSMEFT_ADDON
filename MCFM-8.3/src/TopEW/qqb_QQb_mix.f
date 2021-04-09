@@ -16,7 +16,8 @@ c--- for top pair production, q(-p1)+qbar(-p2) -->  Q(p3)+Q~(P4)
       integer j,k,i
       real(dp):: msq(-nf:nf,-nf:nf),p(mxpart,4),gaq(nf),gvq(nf),
      .     gat,gvt,ss,beta,z,qqb(nf),qbq(nf),cs,sw2,cw2,mw,mz,T3(nf)
-      real(dp):: vev, Lambdainv, gvt_smeft, gat_smeft, gw_smeft,gvt_smeft2,gat_smeft2,gw_smeft2, voL2, voL4, Cpq3, Cpu, c(1:7)           
+      real(dp):: vev, Lambdainv, gvt_smeft, gat_smeft, gw_smeft,gvt_smeft2,gat_smeft2,gw_smeft2, voL2, voL4, Cpq3, Cpu, c(1:7)   
+      real(dp)::kappa2, kappatilde2              
 
       if(first) then
          first=.false.
@@ -38,7 +39,7 @@ c--- for top pair production, q(-p1)+qbar(-p2) -->  Q(p3)+Q~(P4)
       
 !-----BEGIN TILL (SMEFT couplings)   
       
-      call smeft_coupl(gvt,gat,gw,gvt_smeft,gat_smeft,gvt_smeft2,gat_smeft2,gw_smeft2,voL2,voL4,Cpq3,Cpu,c)
+      call smeft_coupl(gvt,gat,gw,gvt_smeft,gat_smeft,gvt_smeft2,gat_smeft2,gw_smeft2,kappa2,kappatilde2,voL2,voL4,Cpq3,Cpu,c)
 
 !-----END TILL      
 

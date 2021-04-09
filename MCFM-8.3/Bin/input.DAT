@@ -127,8 +127,10 @@
 [ttbar SMEFT, nproc=157]
 +0d0               [voL2*Cpq3, real]
 +0d0               [voL2*Cpu, real]
-+0d0               [factor*voL2]
-+0d0               [factor*voL4]
++0d0               [voL2*Re[Cup], real]
++0d0               [voL2*Im[Cup], real]
++1d0               [factor*voL2]
++1d0               [factor*voL4]
 
 [Technical parameters that should not normally be changed]
 .false.		[debug]

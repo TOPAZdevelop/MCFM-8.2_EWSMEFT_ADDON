@@ -14,7 +14,8 @@
      &     t1,t2,u1,u2,genfac,p1dp2,p1dp5,p2dp5,p3dp5,p4dp5,
      &     fac1,fac2,ttv1,ttv2,tta1,tta2,mz,qqb(nf),cs
       integer i
-      real(dp):: vev, Lambdainv, gvt_smeft, gat_smeft, gw_smeft,gvt_smeft2,gat_smeft2,gw_smeft2, voL2, voL4, Cpq3, Cpu, c(1:7)      
+      real(dp):: vev, Lambdainv, gvt_smeft, gat_smeft, gw_smeft,gvt_smeft2,gat_smeft2,gw_smeft2, voL2, voL4, Cpq3, Cpu, c(1:7)  
+      real(dp)::kappa2, kappatilde2          
 
 
       T3 = (/-0.5_dp,0.5_dp,-0.5_dp,0.5_dp,-0.5_dp/)
@@ -29,7 +30,7 @@
       
 !-----BEGIN TILL (SMEFT couplings)
 
-      call smeft_coupl(gvt,gat,gw,gvt_smeft,gat_smeft,gvt_smeft2,gat_smeft2,gw_smeft2,voL2,voL4,Cpq3,Cpu,c)
+      call smeft_coupl(gvt,gat,gw,gvt_smeft,gat_smeft,gvt_smeft2,gat_smeft2,gw_smeft2,kappa2,kappatilde2,voL2,voL4,Cpq3,Cpu,c)
       
 !-----END TILL      
  
