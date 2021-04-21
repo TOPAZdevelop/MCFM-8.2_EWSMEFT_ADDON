@@ -26,5 +26,8 @@
    +1d0               [factor*voL4]     <--- factor multiplying the (v/Lambda)^4 contribution
 
 
+   If you run MCFM with OpenMP then you shoud increase the default stack size, e.g. 
+      export OMP_STACKSIZE=16000  
+
    For details and citation reference see arXiv:1911.11244
 
