@@ -485,7 +485,7 @@ c--- catch special scale choices for stop+b process
       write(unitno,*)
       endif
       if ((tag == 'EWBorn') .or. (writeall)) then
-      write(unitno,fmt=f99) EWBorn,'EW Born contribution'
+      write(unitno,fmt=f98) EWBorn,'EW Born contribution'
       write(unitno,*)
       endif
 
