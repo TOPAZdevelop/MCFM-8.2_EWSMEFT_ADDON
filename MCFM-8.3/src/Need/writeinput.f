@@ -484,6 +484,10 @@ c--- catch special scale choices for stop+b process
       write(unitno,fmt=f99) vol4i,'factor*(v/Lambda)^4'
       write(unitno,*)
       endif
+      if ((tag == 'EWBorn') .or. (writeall)) then
+      write(unitno,fmt=f99) EWBorn,'EW Born contribution'
+      write(unitno,*)
+      endif
 
 
       if (writeall) then
