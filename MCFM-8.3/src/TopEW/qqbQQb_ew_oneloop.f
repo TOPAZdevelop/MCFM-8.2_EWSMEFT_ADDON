@@ -9,7 +9,10 @@
       include 'epinv.f'
       include 'scale.f'
       include 'qcdcouple.f'
-      include 'anomcoup.f'
+      include 'anomcoup.f'       
+      real(dp):: Cpq3i, Cpui,ReCupi,ImCupi, voL2i, voL4i
+      logical :: EWBorn
+      common /smeftcpl/ Cpq3i, Cpui,ReCupi,ImCupi, vol2i, vol4i, EWBorn  
       real(dp):: corr(nf),s,t,u,beta,z,alpha,sigma0,gvt,gat,
      .     xI1,xI2,xI3,xI4,D6,sw2,cw2,mw,mz,mh,born,f1,f2,
      .     rz,rw,rb,rh,yphi,ys,ini_corr(nf),dFD(nf),T3(nf),gvq(nf),
@@ -97,7 +100,7 @@ C      BB = 0._dp
       
       PreFac=sigma0/8._dp
 
-      if (vol2>0._dp) then  
+      if (EWBorn) then  
       do fl=1,5
          BQCDEW(fl)=1/32._dp/Pi*beta/s*((32*alpha**2*Pi**2*(MZ**4*Qt**2*(s**2 + 2*s*t + 2*t**2)*Q(fl)**2 - 2*MZ**2*Qt*s*Q(fl)*(gat_smeft*s*(s + 2*t)*gaq(fl) + (s**2 + 2*s*t + 2*t**2)*(gvt_smeft*gvq(fl) + Qt*Q(fl))) + 
      -      s**2*((gat_smeft2 + gvt_smeft2)*(s**2 + 2*s*t + 2*t**2)*gaq(fl)**2 + 2*s*(s + 2*t)*gaq(fl)*(2*gatgvt*gvq(fl) + gat_smeft*Qt*Q(fl)) + 
@@ -456,7 +459,8 @@ c      corr = BQCDEW(:)
       include 'ewcouple.f'
       include 'masses.f'
       real(dp):: Cpq3i, Cpui,ReCupi,ImCupi, voL2i, voL4i
-      common /smeftcpl/ Cpq3i, Cpui,ReCupi,ImCupi, vol2i, vol4i  
+      logical :: EWBorn
+      common /smeftcpl/ Cpq3i, Cpui,ReCupi,ImCupi, vol2i, vol4i, EWBorn  
       real(dp):: mw,mz,gvt_sm,gat_sm,gw_sm,sw2,cw2
       integer i
       real(dp):: vev, Lambdainv, gvt_smeft, gat_smeft, gw_smeft, gvt_smeft2, gat_smeft2, gw_smeft2,voL2,voL4,Cpq3,Cpq1,Cpu,c(1:7)
