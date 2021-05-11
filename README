@@ -24,10 +24,11 @@
    +0d0               [voL2*Im[Cup], real] <--- value for the imaginary part of the Wilson coefficient Cup times (v/Lambda)^2
    +1d0               [factor*voL2]     <--- factor multiplying the (v/Lambda)^2 contribution
    +1d0               [factor*voL4]     <--- factor multiplying the (v/Lambda)^4 contribution
+   .false.            [EW Born contribution] <--- inclusion of EW Born diagrams for qqbar -> ttbar
 
 
-   If you run MCFM with OpenMP then you shoud increase the default stack size, e.g. 
+   If you run MCFM with OpenMP then you should increase the default stack size, e.g. 
       export OMP_STACKSIZE=16000  
 
-   For details and citation reference see arXiv:1911.11244
+   For details and citation reference see arXiv:1911.11244 & arXiv:2104.04277 
 
