@@ -65,7 +65,8 @@
       include 'specialcuts.f'
       
       real(dp):: Cpq3i, Cpui,ReCupi,ImCupi, voL2i, voL4i
-      common /smeftcpl/ Cpq3i, Cpui,ReCupi,ImCupi, vol2i, vol4i  
+      logical :: EWBorn
+      common /smeftcpl/ Cpq3i, Cpui,ReCupi,ImCupi, vol2i, vol4i, EWBorn  
 c--- APPLgrid - flag using grid
 c      include 'ptilde.f'
 c      include 'APPLinclude.f'
@@ -600,6 +601,8 @@ c--- SMEFT couplings
       if (verbose) call writeinput(6,' * ',' ','vol2i')
       read(20,*) vol4i
       if (verbose) call writeinput(6,' * ',' ','vol4i')
+      read(20,*) EWBorn
+      if (verbose) call writeinput(6,' * ',' ','EWBorn')
 
       readin = .false.
       writeout = .false.

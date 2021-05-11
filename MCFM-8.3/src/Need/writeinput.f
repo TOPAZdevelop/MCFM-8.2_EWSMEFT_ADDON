@@ -52,7 +52,8 @@ c--- by the strings 'lstring' and 'rstring'
       include 'mpicommon.f'
       
       real(dp):: Cpq3i, Cpui,ReCupi,ImCupi, voL2i, voL4i
-      common /smeftcpl/ Cpq3i,ReCupi,ImCupi, Cpui, vol2i, vol4i  
+      logical :: EWBorn      
+      common /smeftcpl/ Cpq3i,ReCupi,ImCupi, Cpui, vol2i, vol4i, EWBorn  
 c--- APPLgrid - flag using grid
 c      include 'ptilde.f'
 c      include 'APPLinclude.f'
